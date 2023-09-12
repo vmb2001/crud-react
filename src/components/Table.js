@@ -1,15 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import './Table.css'
 import Swal from 'sweetalert2'
-import Nav from './Nav'
-
 
 
 function Table({data}) {
 
+    const [updateData,setUpdatedata]=useState(data)
     const [Data,setData]=useState(data)
     const [searchValue,setSearchvalue]=useState("")
-    let s=''
 
     const [currentPage,setcurrentPage]=useState(1)
     const recordPerPage=6
@@ -29,105 +27,114 @@ function Table({data}) {
 
     const getSearchvalue=(e)=>
     {
-       s=e.target.value  
-       setSearchvalue(s) 
-      
+      const s=e.target.value  
+       console.log("search:"+s)
+       if(s=="")
+       {
+            // console.log("INSIDE EMPTY SEARCH")
+            // updateData.map(item=>console.log(item.id))
+            setData(updateData)
+            setSearchvalue("")
+            // console.log("Searchvalue:"+searchValue)
+        }
+        else
+        setSearchvalue(s)   
     }
   
     const handleSearch=()=>
     {
       let flag=0
-      
-           const updateData=Data.filter(value=>
+      if(searchValue!="")
+      {
+           const searchData=Data.filter(value=>
             {
-                if(value.first_name===searchValue)
+                if(value.first_name.includes(searchValue))
                 {
                     flag=1
                     return true
                 }
                 else
-                {
                     return false
-                }
-            })
-           
+                
+            })    
         if(flag==0)
         {
           alert("Not Found")
         }
         else
-        {
-          setData(updateData)
-        }
-
-        if(searchValue!=="")
-        {
-            setData(updateData)
-        }    
-        else
-        {
-            setData(data)
-        }
-    }
+          setData(searchData)
+    }}
 
     const del=(id)=>
     {
-        const deleteData=[...Data].filter(item=>(item.id!=id))
-        setData(deleteData)
+        const update=Data.filter(item=>(item.id!=id))
+        setUpdatedata(update)
+        // console.log("INSIDE DELETE")
+        // updateData.map(item=>console.log(item.id))
+        setData(update)
     }
 
-    const update=(id)=>
-    {
-       setData(prevData=>
-       {
-       return prevData.map(item=>
-        {
-            if(item.id===id)
-            {
-                const { value: formValues } =  Swal.fire({
-                    title: 'Edit Employee Details',
-                    html:
-                      `<input label="email" id="swal-input1" value=${item.email} class="swal2-input">` +
-                      `<input id="swal-input2" value=${item.first_name} class="swal2-input">`+
-                     `<input id="swal-input3" value=${item.last_name} class="swal2-input">`+
-                     `<input id="swal-input4" value=${item.ip} class="swal2-input">`+
-                     `<input id="swal-input5" value=${item.latitude} class="swal2-input">`+
-                     `<input id="swal-input6" value=${item.longitude} class="swal2-input">`,
-                      
-                        focusConfirm: false,
-                        preConfirm: () => {
-                          return [
-                            item.email=document.getElementById('swal-input1').value,
-                            item.first_name=document.getElementById('swal-input2').value,
-                            item.last_name=document.getElementById('swal-input3').value,
-                            item.ip=document.getElementById('swal-input4').value,
-                            item.latitude=document.getElementById('swal-input5').value,
-                            item.longitude=document.getElementById('swal-input6').value
-                          ]
-                        }
-                    })
-                    console.log("email"+item.email)
-                    return item;
-            }
-            return item;
+    const update = (id) => {
+        Data.map((item) => {
+          if (item.id === id) {
+            console.log("INSIDE")
+            const { value: formValues } = Swal.fire({
+              title: 'Edit Employee Details',
+              html:
+                `<input label="email" id="swal-input1" value=${item.email} class="swal2-input">` +
+                `<input id="swal-input2" value=${item.first_name} class="swal2-input">` +
+                `<input id="swal-input3" value=${item.last_name} class="swal2-input">` +
+                `<input id="swal-input4" value=${item.ip} class="swal2-input">` +
+                `<input id="swal-input5" value=${item.latitude} class="swal2-input">` +
+                `<input id="swal-input6" value=${item.longitude} class="swal2-input">`,
+      
+              showCancelButton: true,
+              confirmButtonText: 'Save',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                const new_email = document.getElementById('swal-input1').value;
+                const new_first_name = document.getElementById('swal-input2').value;
+                const new_last_name = document.getElementById('swal-input3').value;
+                const new_ip = document.getElementById('swal-input4').value;
+                const new_latitude = document.getElementById('swal-input5').value;
+                const new_longitude = document.getElementById('swal-input6').value;
+      
+                const update = [...Data];
+                const itemIndex = update.findIndex((item) => item.id === id);
+          
+                if (itemIndex !== -1) {
+                  update[itemIndex].email = new_email;
+                  update[itemIndex].first_name = new_first_name;
+                  update[itemIndex].last_name = new_last_name;
+                  update[itemIndex].ip = new_ip;
+                  update[itemIndex].latitude = new_latitude;
+                  update[itemIndex].longitude = new_longitude;
+                  setUpdatedata(update)
+                  setData(update);
+                }
+                
+              }
+            });
+      
+          }
         })
-       })
-       console.log(Data)
-    }
+      };
+      
+    
    
   return (
     <div>
     <nav className="navbar fixed-top navbar-light bg-light" >
         <div className="container-fluid">
             <a className="navbar-brand"><h3>Employee Data</h3></a>
-            <form className="d-flex" onSubmit={(e)=>{e.preventDefault();handleSearch()}}>
+            <form className="d-flex" onSubmit={(e)=>{e.preventDefault();}}>
                 <input className="form-control me-2" type="search" placeholder="Search by First Name" aria-label="Search" onChange={getSearchvalue}></input>
-                <button className="btn btn-outline-success" type="submit">Search</button>
+                <button className="btn btn-outline-success" onClick={()=>handleSearch()}type="submit">Search</button>
             </form>
         </div>
     </nav>
     
-    <div className='table-responsive m-4'>
+    <div className='container-fluid table-responsive m-4'>
         <table id="myTable" className='table table-stripped'>
             <thead className='table table-dark'>
                 <tr>
