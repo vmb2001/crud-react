@@ -1,22 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import './Table.css'
 import Swal from 'sweetalert2'
-
+import swal from 'sweetalert'
 
 function Table({data}) {
 
-    const [updateData,setUpdatedata]=useState(data)
-    const [Data,setData]=useState(data)
+    const cdata=[...data].sort((a,b)=>{
+        let fa=a.first_name.toLowerCase()
+        let fb=b.first_name.toLowerCase()
+        if(fa<fb)
+        {
+            return -1;
+        }
+        if(fa>fb)
+        {
+            return 1;
+        }
+        return 0;
+    })
+    console.log(cdata.id)
+    const [updateData,setUpdatedata]=useState(cdata)
+    const [Data,setData]=useState(cdata)
     const [searchValue,setSearchvalue]=useState("")
 
     const [currentPage,setcurrentPage]=useState(1)
-    const recordPerPage=6
+    const recordPerPage=10
     const lastIndex=currentPage*recordPerPage
     const firstIndex=lastIndex-recordPerPage
     const records=Data.slice(firstIndex,lastIndex)
     const npage=Math.ceil(Data.length/recordPerPage)
     const num =[]
-    const maxVpages=5
+    const maxVpages=8
     const halfMax=Math.floor(maxVpages/2)
     const startPage=Math.max(1,currentPage-halfMax)
     const endPage=Math.min(npage,startPage+maxVpages-1)
@@ -24,6 +38,20 @@ function Table({data}) {
     {
         num.push(i)
     }
+
+    function prePage(){
+        if(currentPage!==1){
+            setcurrentPage(currentPage-1)
+        }}
+
+      function changeCpage(id){
+        setcurrentPage(id)   
+      }
+
+      function nextPage(){
+        if(currentPage<npage){
+            setcurrentPage(currentPage+1)
+        }}
 
     const getSearchvalue=(e)=>
     {
@@ -40,6 +68,62 @@ function Table({data}) {
         else
         setSearchvalue(s)   
     }
+
+    const add=()=>
+    {
+       
+            
+              //console.log("INSIDE")
+               Swal.fire({
+                title: 'Add Employee',
+                html:  
+                  `
+                  <label for="swal-input1">Email ID  :</label>
+                  <input label="email" id="swal-input1" value="" class="swal2-input">
+                  <label for="swal-input2">First Name:</label>
+                  <input id="swal-input2" value="" class="swal2-input">
+                  <label for="swal-input3">Last Name:</label>
+                  <input id="swal-input3" value="" class="swal2-input">
+                  <label for="swal-input4">IP Address:</label>
+                  <input id="swal-input4" value=""class="swal2-input">
+                  <label for="swal-input5">Latitude:</label>
+                  <input id="swal-input5" value="" class="swal2-input">
+                  <label for="swal-input6">Longitude:</label>
+                  <input id="swal-input6" value="" class="swal2-input">`,
+        
+                showCancelButton: true,
+                confirmButtonText: 'Add',
+              }).then((result) => {
+  
+                if (result.isConfirmed) {
+                  const new_email = document.getElementById('swal-input1').value;
+                  const new_first_name = document.getElementById('swal-input2').value;
+                  const new_last_name = document.getElementById('swal-input3').value;
+                  const new_ip = document.getElementById('swal-input4').value;
+                  const new_latitude = document.getElementById('swal-input5').value;
+                  const new_longitude = document.getElementById('swal-input6').value;
+
+                  const update = [...Data];
+                  let max=1
+                  const new_id=update.length+1
+                  console.log("new id:"+new_id)
+        
+                  const now = new Date();
+                  const date=( now.getFullYear() + '-' + (now.getDate()) + '-' + now.getMonth() + 1)+ " " + now.getHours() + ':'
+                                + ((now.getMinutes() < 10) ? ("0" + now.getMinutes()) : (now.getMinutes())) + ':' + ((now.getSeconds() < 10) ? ("0" + now
+                                .getSeconds()) : (now.getSeconds()))
+            
+                    const obj ={id:new_id,email:new_email,first_name:new_first_name,last_name:new_last_name,
+                        ip:new_ip,latitude:new_latitude,longitude:new_longitude,created_at:date}
+                    update.unshift(obj)
+                    setUpdatedata(update)
+                    setData(update);
+                  
+                  
+                  swal("Updated", "Data has been updated successfully", "success");
+                }
+              })
+    }
   
     const handleSearch=()=>
     {
@@ -48,7 +132,7 @@ function Table({data}) {
       {
            const searchData=Data.filter(value=>
             {
-                if(value.first_name.includes(searchValue))
+                if((value.first_name.toLowerCase()).includes(searchValue.toLowerCase()))
                 {
                     flag=1
                     return true
@@ -59,7 +143,7 @@ function Table({data}) {
             })    
         if(flag==0)
         {
-          alert("Not Found")
+           new Swal("Not Found")
         }
         else
           setData(searchData)
@@ -67,11 +151,27 @@ function Table({data}) {
 
     const del=(id)=>
     {
-        const update=Data.filter(item=>(item.id!=id))
-        setUpdatedata(update)
-        // console.log("INSIDE DELETE")
-        // updateData.map(item=>console.log(item.id))
-        setData(update)
+          swal({
+            title: "Are you sure?",
+            text: "Are you sure u want to delete this row?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                const update=Data.filter(item=>(item.id!=id))
+                setUpdatedata(update)
+                // console.log("INSIDE DELETE")
+                // updateData.map(item=>console.log(item.id))
+                setData(update)
+            swal({
+                title:"Successfully Deleted",
+                icon: "success",
+              });
+            } 
+          });
+        
     }
 
     const update = (id) => {
@@ -118,23 +218,25 @@ function Table({data}) {
       
           }
         })
-      };
+      }
       
-    
-   
   return (
     <div>
     <nav className="navbar fixed-top navbar-light bg-light" >
         <div className="container-fluid">
             <a className="navbar-brand"><h3>Employee Data</h3></a>
             <form className="d-flex" onSubmit={(e)=>{e.preventDefault();}}>
-                <input className="form-control me-2" type="search" placeholder="Search by First Name" aria-label="Search" onChange={getSearchvalue}></input>
+                <input className="form-control me-2" type="search" placeholder="Search By First Name"
+                     aria-label="Search" onChange={getSearchvalue}></input>
                 <button className="btn btn-outline-success" onClick={()=>handleSearch()}type="submit">Search</button>
             </form>
         </div>
     </nav>
-    
-    <div className='container-fluid table-responsive m-4'>
+    {/* <div className='container'> */}
+    <div className='table-responsive m-3'>
+    <div className='emp-btn'>
+        <button className='btn btn-primary' onClick={()=>add()}>Add Employee</button>
+    </div>
         <table id="myTable" className='table table-stripped'>
             <thead className='table table-dark'>
                 <tr>
@@ -174,7 +276,7 @@ function Table({data}) {
                 }
             </tbody>
         </table>
-        <nav>
+        <nav className='nav'>
              <ul className='pagination'>
                 <li className='page-item'>
                     <a href='#' className='page-link'
@@ -196,22 +298,7 @@ function Table({data}) {
         </nav>
     </div>
     </div>
+    // </div>
   )
-  function prePage(){
-    if(currentPage!==1){
-        setcurrentPage(currentPage-1)
-    }
-  }
-  function changeCpage(id)
-  {
-    setcurrentPage(id)   
-  }
-  function nextPage(){
-    if(currentPage<npage){
-        setcurrentPage(currentPage+1)
-    }
-
-  }
 }
-
 export default Table;
