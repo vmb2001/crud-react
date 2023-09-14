@@ -11,7 +11,7 @@ function App() {
     <div className="App">
      <Table data={Customers}/>
     </div>
-  );
+  )
 }
 
 export default App;
