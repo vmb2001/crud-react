@@ -178,7 +178,11 @@ function Table({data}) {
                 const new_longitude = document.getElementById('swal-input6').value;
       
                 const update = [...Data];
-                const itemIndex = update.findIndex((item) => item.id === id);
+                const itemIndex = update.findIndex((item) => item.id === id)
+                const now = new Date()
+                const date=( now.getFullYear() + '-' + (now.getDate()) + '-' + now.getMonth() + 1)+ " " + now.getHours() + ':'
+                + ((now.getMinutes() < 10) ? ("0" + now.getMinutes()) : (now.getMinutes())) + ':' + ((now.getSeconds() < 10) ? ("0" + now
+                .getSeconds()) : (now.getSeconds()))
           
                 if (itemIndex !== -1) {
                   update[itemIndex].email = new_email;
@@ -187,6 +191,7 @@ function Table({data}) {
                   update[itemIndex].ip = new_ip;
                   update[itemIndex].latitude = new_latitude;
                   update[itemIndex].longitude = new_longitude;
+                  update[itemIndex].updated_at = date;
                   setUpdatedata(update)
                   setData(update);
                 }
@@ -214,7 +219,7 @@ function Table({data}) {
     <div className='emp-btn'>
         <button className='btn btn-primary' onClick={()=>add()}>Add Employee</button>
     </div>
-        <table id="myTable" className='table table-stripped'>
+        <table id="myTable" className='table table-hover table-stripped'>
             <thead className='table table-dark'>
                 <tr>
                 <th>Id</th>
