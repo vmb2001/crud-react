@@ -6,7 +6,9 @@ import Page from'./Page'
 
 function Table({data}) {
 
-    const cdata=[...data].sort((a,b)=>{
+  const Sort=(newdata)=>
+  {
+    const ndata=[...newdata].sort((a,b)=>{
         let fa=a.first_name.toLowerCase()
         let fb=b.first_name.toLowerCase()
         if(fa<fb)
@@ -19,12 +21,15 @@ function Table({data}) {
         }
         return 0;
     })
+    return ndata;
+  }   
+    const cdata=Sort([...data]) 
     const [updateData,setUpdatedata]=useState(cdata)
     const [Data,setData]=useState(cdata)
     const [searchValue,setSearchvalue]=useState("")
 
     const [currentPage,setcurrentPage]=useState(1)
-    const recordPerPage=10
+    const recordPerPage=9
     const lastIndex=currentPage*recordPerPage
     const firstIndex=lastIndex-recordPerPage
     const records=Data.slice(firstIndex,lastIndex)
@@ -35,19 +40,18 @@ function Table({data}) {
         Swal.fire({
         title: 'Add Employee',
         html:  
-          `
-          <label for="swal-input1">Email ID  :</label>
-          <input label="email" id="swal-input1" value="" class="swal2-input">
-          <label for="swal-input2">First Name:</label>
-          <input id="swal-input2" value="" class="swal2-input">
-          <label for="swal-input3">Last Name:</label>
-          <input id="swal-input3" value="" class="swal2-input">
-          <label for="swal-input4">IP Address:</label>
-          <input id="swal-input4" value=""class="swal2-input">
-          <label for="swal-input5">Latitude:</label>
-          <input id="swal-input5" value="" class="swal2-input">
-          <label for="swal-input6">Longitude:</label>
-          <input id="swal-input6" value="" class="swal2-input">`,
+        `<div className="form-group"><label for="swal-input1"  style="width: 100px;">Email ID:</label>
+        <input label="email" id="swal-input1" value="" class="swal2-input"><div/>
+        <div className="form-group"><label for="swal-input2" style="width: 100px;">First Name:</label>
+        <input id="swal-input2" value="" class="swal2-input"><div/>
+        <div className="form-group"><label for="swal-input3" style="width: 100px;">Last Name:</label>
+        <input id="swal-input3" value="" class="swal2-input"><div/>
+        <div className="form-group"><label for="swal-input4" style="width: 100px;">IP Address:</label>
+        <input id="swal-input4" value="" class="swal2-input"><div/>
+        <div className="form-group"><label for="swal-input5" style="width: 100px;">Latitude:</label>
+        <input id="swal-input5" value="" class="swal2-input"><div/>
+        <div className="form-group"><label for="swal-input6" style="width: 100px;">Longitude:</label>
+        <input id="swal-input6" value="" class="swal2-input"><div/>`,
           
         showCancelButton: true,
         confirmButtonText: 'Add',
@@ -61,7 +65,7 @@ function Table({data}) {
         const new_latitude = document.getElementById('swal-input5').value;
         const new_longitude = document.getElementById('swal-input6').value;
         
-        const update = [...Data]
+        let update = [...Data]
         let items=[]
         update.map(item=>items.push(item.id))
         const m=Math.max(...items)
@@ -75,6 +79,7 @@ function Table({data}) {
         const obj ={id:new_id,email:new_email,first_name:new_first_name,last_name:new_last_name,
           ip:new_ip,latitude:new_latitude,longitude:new_longitude,created_at:date}
           update.unshift(obj)
+          update=Sort(update)
           setUpdatedata(update)
           setData(update);
           
@@ -87,14 +92,14 @@ function Table({data}) {
     {
       //setData(updateData)
       const s=e.target.value  
-      console.log("search:"+s)
+      // console.log("search:"+s)
       if(s=="")
       {
-         // console.log("INSIDE EMPTY SEARCH")
-          //updateData.map(item=>console.log(item.id))
+        //  console.log("INSIDE EMPTY SEARCH")
+          updateData.map(item=>console.log(item.id))
           setData(updateData)
           setSearchvalue("")
-          //console.log("Searchvalue:"+searchValue)
+          // console.log("Searchvalue:"+searchValue)
       }
       else
           setSearchvalue(s)   
@@ -114,8 +119,8 @@ function Table({data}) {
                 }
                 else
                     return false    
-            })    
-        if(flag==0)
+            })   
+        if(flag===0)
            new Swal("Not Found")
         else
           setData(searchData)
@@ -149,22 +154,22 @@ function Table({data}) {
     const update = (id) => {
         Data.map((item) => {
           if (item.id === id) {
-            console.log("INSIDE")
+            // console.log("INSIDE")
              Swal.fire({
               title: 'Edit Employee Details',
               html:
-              `<label for="swal-input1">Email ID  :</label>
-              <input label="email" id="swal-input1" value=${item.email} class="swal2-input">
-              <label for="swal-input2">First Name:</label>
-              <input id="swal-input2" value=${item.first_name} class="swal2-input">
-              <label for="swal-input3">Last Name:</label>
-              <input id="swal-input3" value=${item.last_name} class="swal2-input">
-              <label for="swal-input4">IP Address:</label>
-              <input id="swal-input4" value=${item.ip} class="swal2-input">
-              <label for="swal-input5">Latitude:</label>
-              <input id="swal-input5" value=${item.latitude} class="swal2-input">
-              <label for="swal-input6">Longitude:</label>
-              <input id="swal-input6" value=${item.longitude} class="swal2-input">`,
+              `<div className="form-group"><label for="swal-input1"  style="width: 100px;">Email ID:</label>
+              <input label="email" id="swal-input1" value=${item.email} class="swal2-input"><div/>
+              <div className="form-group"><label for="swal-input2" style="width: 100px;">First Name:</label>
+              <input id="swal-input2" value=${item.first_name} class="swal2-input"><div/>
+              <div className="form-group"><label for="swal-input3" style="width: 100px;">Last Name:</label>
+              <input id="swal-input3" value=${item.last_name} class="swal2-input"><div/>
+              <div className="form-group"><label for="swal-input4" style="width: 100px;">IP Address:</label>
+              <input id="swal-input4" value=${item.ip} class="swal2-input"><div/>
+              <div className="form-group"><label for="swal-input5" style="width: 100px;">Latitude:</label>
+              <input id="swal-input5" value=${item.latitude} class="swal2-input"><div/>
+              <div className="form-group"><label for="swal-input6" style="width: 100px;">Longitude:</label>
+              <input id="swal-input6" value=${item.longitude} class="swal2-input"><div/>`,
       
               showCancelButton: true,
               confirmButtonText: 'Save',
@@ -177,7 +182,7 @@ function Table({data}) {
                 const new_latitude = document.getElementById('swal-input5').value;
                 const new_longitude = document.getElementById('swal-input6').value;
       
-                const update = [...Data];
+                let update = [...Data];
                 const itemIndex = update.findIndex((item) => item.id === id)
                 const now = new Date()
                 const date=( now.getFullYear() + '-' + (now.getDate()) + '-' + now.getMonth() + 1)+ " " + now.getHours() + ':'
@@ -192,6 +197,7 @@ function Table({data}) {
                   update[itemIndex].latitude = new_latitude;
                   update[itemIndex].longitude = new_longitude;
                   update[itemIndex].updated_at = date;
+                  update=Sort(update)
                   setUpdatedata(update)
                   setData(update);
                 }
@@ -204,7 +210,7 @@ function Table({data}) {
       }
       
   return (
-    <div>
+    <div className='con'>
     <nav className="navbar fixed-top navbar-light bg-light" >
         <div className="container-fluid">
             <a className="navbar-brand"><h3>Employee Data</h3></a>
