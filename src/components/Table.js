@@ -289,7 +289,8 @@ function Table({ data }) {
                       className="btn btn-danger"
                       id={item.id}
                       onClick={() => {
-                        window.gtag("event", "delete", {
+                        window.dataLayer.push({
+                          event: "delete",
                           action: "delete button clicked ",
                           deleted_id: item.id,
                           deleted_name: item.first_name,
@@ -302,7 +303,8 @@ function Table({ data }) {
                     <button
                       className="btn btn-primary"
                       onClick={() => {
-                        window.gtag("event", "edit", {
+                        window.dataLayer.push({
+                          event: "edit",
                           action: "edit button clicked ",
                           edited_id: item.id,
                           edited_name: item.first_name,
