@@ -289,7 +289,7 @@ function Table({ data }) {
                       className="btn btn-danger"
                       id={item.id}
                       onClick={() => {
-                        window.gtag("event_name", "delete", {
+                        window.gtag("event", "delete", {
                           action: "delete button clicked ",
                           deleted_id: item.id,
                           deleted_name: item.first_name,
