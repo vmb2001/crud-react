@@ -301,7 +301,14 @@ function Table({ data }) {
                     </button>
                     <button
                       className="btn btn-primary"
-                      onClick={() => update(item.id)}
+                      onClick={() => {
+                        window.gtag("event", "edit", {
+                          action: "edit button clicked ",
+                          edited_id: item.id,
+                          edited_name: item.first_name,
+                        });
+                        update(item.id);
+                      }}
                     >
                       Edit
                     </button>
