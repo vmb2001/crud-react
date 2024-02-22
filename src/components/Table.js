@@ -289,9 +289,10 @@ function Table({ data }) {
                       className="btn btn-danger"
                       id={item.id}
                       onClick={() => {
-                        window.gtag("event", "delete", {
+                        window.dataLayer.push("event", "delete", {
                           action: "delete button clicked ",
                           deleted_id: item.id,
+                          deleted_name: item.first_name,
                         });
                         del(item.id);
                       }}
