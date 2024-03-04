@@ -242,7 +242,14 @@ function Table({ data }) {
             ></input>
             <button
               className="btn btn-outline-success"
-              onClick={() => handleSearch()}
+              onClick={() => {
+                handleSearch();
+                window.dataLayer.push({
+                  event: "site_click_tracking",
+                  click_tracking_action: "search button clicked",
+                  click_tracking_label: "search",
+                });
+              }}
               type="submit"
             >
               Search
