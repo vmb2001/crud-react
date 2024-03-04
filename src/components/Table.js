@@ -225,7 +225,14 @@ function Table({ data }) {
       <nav className="navbar fixed-top navbar-light bg-light">
         <div className="container-fluid">
           <a className="navbar-brand">
-            <h3>Employee Data</h3>
+            <h3 onClick={() =>{
+                 window.dataLayer.push({
+                  event: "site_click_tracking",
+                  action: "Emp Data text clicked",
+                  edited_id: 'item.id',
+                  edited_name: 'item.first_name',
+                });
+            }}>Employee Data</h3>
           </a>
           <form
             className="d-flex"
