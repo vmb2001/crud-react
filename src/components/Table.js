@@ -105,7 +105,7 @@ function Table({ data }) {
     // console.log("search:"+s)
     if (s == "") {
       //  console.log("INSIDE EMPTY SEARCH")
-      updateData.map((item) => console.log(item.id));
+      // updateData.map((item) => console.log(item.id));
       setData(updateData);
       setSearchvalue("");
       // console.log("Searchvalue:"+searchValue)
