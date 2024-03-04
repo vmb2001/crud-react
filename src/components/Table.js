@@ -227,7 +227,7 @@ function Table({ data }) {
           <a className="navbar-brand">
             <h3 onClick={() =>{
                  window.dataLayer.push({
-                  event: "site_click_tracking",
+                  event: "site_navigation_clicks",
                   action: "Emp Data text clicked",
                   edited_id: 'item.id',
                   edited_name: 'item.first_name',
