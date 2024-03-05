@@ -226,12 +226,6 @@ function Table({ data }) {
         <div className="container-fluid">
           <a className="navbar-brand">
             <h3 onClick={() =>{
-                 window.dataLayer.push({
-                  event: "site_navigation_clicks",
-                  action: "Emp Data text clicked",
-                  edited_id: 'item.id',
-                  edited_name: 'item.first_name',
-                });
             }}>Employee Data</h3>
           </a>
           <form
@@ -266,7 +260,14 @@ function Table({ data }) {
       </nav>
       <div className="table-responsive m-3">
         <div className="emp-btn">
-          <button className="btn btn-primary" onClick={() => add()}>
+          <button className="btn btn-primary" onClick={() => {
+          window.dataLayer.push({
+            event: "site_navigation_clicks",
+            click_tracking_action: "Add new Emp",
+            click_tracking_label: 'Add',
+            });
+            add()
+          }}>
             Add Employee
           </button>
         </div>
